@@ -13,9 +13,8 @@ class PlayViewController: UIViewController, AVAudioPlayerDelegate {
     static let identifier = "PlayViewController"
     static let storyboard = "Main"
 
-    var audioPlayer: AVAudioPlayer!
+    var audioPlayer = AVPlayer()
     var audioItem: AudioCellItem!
-    var audioURL: URL!
     var fileName = ""
 
     @IBOutlet var playButton: UIButton!
@@ -29,7 +28,6 @@ class PlayViewController: UIViewController, AVAudioPlayerDelegate {
         let duration = split[0] * 60 + split[1]
 
         fileName = "\(audioItem.title)+\(duration).m4a"
-        print(fileName)
 
         getData()
     }
@@ -48,21 +46,10 @@ class PlayViewController: UIViewController, AVAudioPlayerDelegate {
                 return
             }
 
-            self.initPlayer(downloadURL)
-            print(downloadURL)
+            let playerItem = AVPlayerItem(url: downloadURL)
+            self.audioPlayer.replaceCurrentItem(with: playerItem)
+
             self.playButton.isEnabled = true
         }
-    }
-
-    private func initPlayer(_ url: URL) {
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-        } catch let error {
-            print("init player error \(error)")
-            return
-        }
-
-        audioPlayer.delegate = self
-        audioPlayer.prepareToPlay()
     }
 }
